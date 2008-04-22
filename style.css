@@ -1,0 +1,105 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+h1 {
+	text-align: center;
+}
+#viewer {
+	position: relative;
+	height: 350px;
+	width: 800px;
+	margin: 0 auto;
+	border: 1px solid black;
+}
+.mainview {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 230px;
+	width: 100%;
+}
+.subview {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 120px;
+	width: 100%;
+}
+.infoview {
+	z-index: 10;
+	position: absolute;
+	top: 230px;
+	left: 300px;
+	width: 200px;
+	height: 1em;
+	line-height: 0.9em;
+	background: red;
+	color: white;
+	text-align: center;
+}
+#strip {
+	display: block;
+	margin: auto;
+}
+#stripholder {
+	position: absolute;
+	top: 0;
+	left: 30px;
+	width: 740px;
+	overflow: auto;
+}
+.navlink {
+	display: block;
+	position: absolute;
+	top: 0;
+	height: 100%;
+	background: red;
+	color: white;
+	text-align: center;
+}
+.navlink:hover {
+	background: black;
+	cursor: pointer;
+}
+#first, #last {
+	width: 20px;
+}
+#prevday,#nextday {
+	width: 30px;
+	line-height: 220px;
+}
+#prevday, #prevweek, #first {
+	left: 0;
+}
+#nextday, #nextweek, #last {
+	right: 0;
+}
+#prevweek,#nextweek {
+	width: 20px;
+	line-height: 120px;
+}
+#weekview {
+	width: 750px;
+	height: 100px;
+	margin: auto;
+	position: absolute;
+	bottom: 5px;
+	left: 28px;
+}
+#weekview li {
+	list-style: none;
+	float: left;
+	display: block;
+	margin: 3px;
+	padding: 0;
+	width: 100px;
+	height: 97px;
+	background: lightgrey;
+}
+#weekview img {
+	width: 100px;
+}
+.current {
+	border: 2px solid red;
+}
