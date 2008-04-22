@@ -1,14 +1,13 @@
 $(function() {
 	var current, data, first;
-	var domain = "http://widget.dilbert.com";
+	var domain = "http://dilbert.com";
 	var data = {};
-	var week = 0;
+	var week;
 	function setupViewer() {
 		$('#viewer').empty()
 			.append($('<div class="mainview"><span id="prevday" class="navlink">&lsaquo;</span><div id="stripholder"><img id="strip" src="default.gif"/></div><span id="nextday" class="navlink">&rsaquo;</span></div>'))
 			.append($('<div class="infoview"><span id="first" class="navlink" title="First">&laquo;</span><span id="info">Loading</span><span id="last" class="navlink" title="Last">&raquo;</span></div>'))
 			.append($('<div class="subview"><span id="prevweek" class="navlink">&laquo;</span><ol id="weekview"/><span id="nextweek" class="navlink">&raquo;</span></div>'))
-			//.append($('<input id="datepicker"/>').attachDatepicker().hide())
 		for(var i=0; i<7; i++) {
 			$('#weekview').append($('<li class="day'+i+'"><img src="default_th.gif"/></li>'))
 		}
@@ -32,11 +31,9 @@ $(function() {
 		$('#prevweek').click(function() { setCurrent(current - 7); });
 		$('#nextweek').click(function() { setCurrent(current + 7); });
 		$('#first').click(function() {
-			var f = dateToOffset(first);
-			loadWeek(f[0]-1); current = f[1];
+			goToDate(first);
 		});
-		$('#last').click(function() { loadWeek(1); });
-		//$('#info').click(function() { $('#datepicker').showDatepicker(); });
+		$('#last').click(function() { goToDate(new Date()); });
 		$.datepicker.setDefaults({mandatory: true, dateFormat: 'D M d, yy'});
 		$('#info').click(function() { $.datepicker.dialogDatepicker($(this).text(), goToDate); });
 	}
@@ -49,15 +46,17 @@ $(function() {
 	function setCurrent(to) {
 		if(to < 0) {
 			current = 7 + to;
-			return loadWeek(week + 1);
+			week.setDate(week.getDate() - 7);
+			return loadWeek(week);
 		} else if (to > 6) {
 			current = to - 7;
-			return loadWeek(week - 1);
+			week.setDate(week.getDate() + 7);
+			return loadWeek(week);
 		} else {
 			if(to != 0) {
-				to = (to != undefined) && to || parseInt($(data[week]).find('CurrentDay').text());
+				to = (to != undefined) && to || parseInt($(data[week.toString()]).find('CurrentDay').text());
 			}
-			var strip = $(data[week]).find('Day').eq(to);
+			var strip = $(data[week.toString()]).find('Day').eq(to);
 			$('#strip')
 				.attr('src', domain + strip.find('URL_Strip').text())
 				.attr('title', strip.find('StripID').text()+': '+strip.attr('Date'));
@@ -66,22 +65,20 @@ $(function() {
 			current = to;
 		}
 	}
-	function dateToOffset(sdate) {
-		var now = new Date();
+	function stringToFirstDay(sdate) {
 		var d = new Date(sdate);
-		var weeksAgo = (now.getTime() - d.getTime()) / (1000 * 7 * 24 * 60 * 60);
-		var offset = Math.floor(weeksAgo);
-		var day = ((now.getDay() - Math.floor((weeksAgo - offset) * 7))) - 1;
-		return [offset, day];
+		var day = d.getDay() - 1; // Mon==0 in feed
+		d.setDate(d.getDate() - day);
+		return [d, day];
 	}
 	function goToDate(sdate) {
-		var d = dateToOffset(sdate);
+		var d = stringToFirstDay(sdate);
 		current = d[1];
 		loadWeek(d[0]);
 	}
 	function loadSuccess(d) {
-		data[week] = d
-		//domain = 'http://'+$(d).find('Domain').text();
+		data[week.toString()] = d
+		domain = 'http://'+$(d).find('Domain').text();
 		setCurrent(current);
 		$(d).find('Day').each(setDay);
 		var f = $(d).find('FirstDay').text();
@@ -90,19 +87,21 @@ $(function() {
 			$('#datepicker').changeDatepicker({minDate: new Date(f)});
 		}
 	}
-	function loadWeek(offset) {
-		week = (offset && offset >= 0) && offset || 0;
-		if(!data[week]) {
+	function loadWeek(d) {
+		//week = (offset && offset >= 0) && offset || 0;
+		console.log(d, current);
+		week = d;
+		if(!data[week.toString()]) {
+			var source;
 			$.ajax({
-				'url': 'xmlproxy.php?url=http://widget.dilbert.com/xml/widget.1.strip.list/?WeekOffset='+week,
+				'url': 'xmlproxy.php?url=http://dilbert.com/xml/widget.daily/?'+encodeURIComponent('Year='+d.getFullYear()+'&Month='+(d.getMonth() + 1)+'&Day='+d.getDate()),
 				'dataType': 'xml',
 				'success': loadSuccess
 			})
 		} else {
-			loadSuccess(data[week]);
+			loadSuccess(data[week.toString()]);
 		}
 	}
 	setupViewer();
-	loadWeek(week);
-	//goToDate("Fri Feb 1, 2008");
+	goToDate(new Date());
 });
