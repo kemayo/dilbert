@@ -89,7 +89,6 @@ $(function() {
 	}
 	function loadWeek(d) {
 		//week = (offset && offset >= 0) && offset || 0;
-		console.log(d, current);
 		week = d;
 		if(!data[week.toString()]) {
 			var source;
