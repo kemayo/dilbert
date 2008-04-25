@@ -5,6 +5,12 @@
 h1 {
 	text-align: center;
 }
+#footnote {
+	font-size: small;
+	text-align: center;
+	width: 800px;
+	margin: 1ex auto;
+}
 #viewer {
 	position: relative;
 	height: 350px;

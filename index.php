@@ -7,4 +7,5 @@ $page_js = array("jquery-1.2.3.pack.js", "ui.datepicker.pack.js", "dilbert.js",)
 require '../../theme/head.php';
 ?>
 			<div id="viewer">Javascript is required, m'kay?</div>
+			<p id="footnote">P.S.: Scott Adams / United Media: if you want me to take this down, <a href="mailto:kemayo@gmail.com">let me know</a>.</p>
 <?php require '../../theme/foot.php';?>
