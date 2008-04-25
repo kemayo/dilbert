@@ -4,8 +4,8 @@ if(!(substr($url, 0, 7) == 'http://')) { die('URLs only'); }
 ob_start();
 
 $cache = './xmlcache/'.md5($url);
-//if(!(file_exists($cache) and (filemtime($cache) > strtotime('last sunday 00:00:00')))) {
-if(!(file_exists($cache) and (filemtime($cache) > (time()-(12*60*60))))) {
+if(!(file_exists($cache) and (filemtime($cache) > strtotime('today 06:00:00')))) {
+//if(!(file_exists($cache) and (filemtime($cache) > (time()-(12*60*60))))) {
 	// If the cache doesn't exist, or it was updated before last sunday
 	$remote = curl_init($url);
 	// Don't return HTTP headers. Do return the contents of the call
