@@ -71,14 +71,15 @@ $(function() {
 		d.setDate(d.getDate() - day);
 		return [d, day];
 	}
-	function goToDate(sdate) {
+	function goToDate(sdate, skipCurrent) {
 		var d = stringToFirstDay(sdate);
-		current = d[1];
+		if(!skipCurrent) { current = d[1]; }
 		loadWeek(d[0]);
 	}
 	function loadSuccess(d) {
 		data[week.toString()] = d
 		domain = 'http://'+$(d).find('Domain').text();
+		if(!current) { current = parseInt($(d).find('CurrentDay').text()); }
 		setCurrent(current);
 		$(d).find('Day').each(setDay);
 		var f = $(d).find('FirstDay').text();
@@ -102,5 +103,5 @@ $(function() {
 		}
 	}
 	setupViewer();
-	goToDate(new Date());
+	goToDate(new Date(), true);
 });
