@@ -68,12 +68,13 @@ $(function() {
 	function stringToFirstDay(sdate) {
 		var d = new Date(sdate);
 		var day = d.getDay() - 1; // Mon==0 in feed
+		if(day < 0) { day = 6; }
 		d.setDate(d.getDate() - day);
 		return [d, day];
 	}
-	function goToDate(sdate, skipCurrent) {
+	function goToDate(sdate) {
 		var d = stringToFirstDay(sdate);
-		if(!skipCurrent) { current = d[1]; }
+		if(current) { current = d[1]; }
 		loadWeek(d[0]);
 	}
 	function loadSuccess(d) {
@@ -89,7 +90,6 @@ $(function() {
 		}
 	}
 	function loadWeek(d) {
-		//week = (offset && offset >= 0) && offset || 0;
 		week = d;
 		if(!data[week.toString()]) {
 			var source;
