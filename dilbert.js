@@ -80,7 +80,7 @@ $(function() {
 	function loadSuccess(d) {
 		data[week.toString()] = d
 		domain = 'http://'+$(d).find('Domain').text();
-		if(!current) { current = parseInt($(d).find('CurrentDay').text()); }
+		if(current == undefined) { current = parseInt($(d).find('CurrentDay').text()); }
 		setCurrent(current);
 		$(d).find('Day').each(setDay);
 		var f = $(d).find('FirstDay').text();
