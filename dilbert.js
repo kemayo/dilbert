@@ -3,6 +3,7 @@ $(function() {
 	var domain = "http://dilbert.com";
 	var data = {};
 	var week;
+	var lastHash;
 	function setupViewer() {
 		$('#viewer').empty()
 			.append($('<div class="mainview"><span id="prevday" class="navlink">&lsaquo;</span><div id="stripholder"><img id="strip" src="default.gif"/></div><span id="nextday" class="navlink">&rsaquo;</span></div>'))
@@ -64,6 +65,24 @@ $(function() {
 			$('#info').text(strip.attr('Date'));
 			current = to;
 		}
+		var now = new Date();
+		var currentDate = new Date(week.getFullYear(), week.getMonth(), week.getDate() + current);
+		if(currentDate.getFullYear() == now.getFullYear() && currentDate.getMonth() == now.getMonth() && currentDate.getDate() == now.getDate()) {
+			if(window.location.hash) {
+				window.location.hash = '';
+			}
+		} else {
+			var month = currentDate.getMonth() + 1;
+			var day = currentDate.getDate();
+			if(month < 10) { 
+				month = "0" + month;
+			}
+			if(day < 10) {
+				day = "0" + day;
+			}
+			window.location.hash = '#' + currentDate.getFullYear() + '-' + month + '-' + day;
+		}
+		lastHash = window.location.hash; // to avoid a double-load
 	}
 	function stringToFirstDay(sdate) {
 		var d = new Date(sdate);
@@ -74,7 +93,7 @@ $(function() {
 	}
 	function goToDate(sdate) {
 		var d = stringToFirstDay(sdate);
-		if(current) { current = d[1]; }
+		current = d[1];
 		loadWeek(d[0]);
 	}
 	function loadSuccess(d) {
@@ -103,5 +122,22 @@ $(function() {
 		}
 	}
 	setupViewer();
-	goToDate(new Date(), true);
+
+	var hashChecker = function() {
+		if(window.location.hash == lastHash) {
+			return;
+		}
+		lastHash = window.location.hash;
+		if(window.location.hash) {
+			var match;
+			if(match = /(\d{4})-(\d{1,2})-(\d{1,2})/.exec(window.location.hash)) {
+				goToDate(new Date(match[1], match[2] - 1, match[3]));
+				return true;
+			}
+		}
+	}
+	if(!hashChecker()) {
+		goToDate(new Date());
+	}
+	setInterval(hashChecker, 100);
 });
